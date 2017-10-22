@@ -1,0 +1,15 @@
+# Created by .ignore support plugin (hsz.mobi)
+.gitignore
+.idea/
+aclImdb/README
+aclImdb/imdb.vocab
+aclImdb/imdbEr.txt
+aclImdb/test/
+aclImdb/train/labeledBow.feat
+aclImdb/train/neg/
+aclImdb/train/pos/
+aclImdb/train/unsup/
+aclImdb/train/unsupBow.feat
+aclImdb/train/urls_neg.txt
+aclImdb/train/urls_pos.txt
+aclImdb/train/urls_unsup.txt
