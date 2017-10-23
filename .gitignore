@@ -13,3 +13,4 @@ aclImdb/train/unsupBow.feat
 aclImdb/train/urls_neg.txt
 aclImdb/train/urls_pos.txt
 aclImdb/train/urls_unsup.txt
+GoogleNews-vectors-negative300.bin
