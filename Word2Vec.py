@@ -36,6 +36,12 @@ def storeVecs(input, filename):
     fw.close()
 
 
+def grabVecs(filename):
+    import pickle
+    fr = open(filename)
+    return pickle.load(fr)
+
+
 def embedding(tag):
     data_path = "aclImdb/" + tag + "/"
     pos_files = os.listdir(data_path + "pos/")
@@ -43,10 +49,10 @@ def embedding(tag):
     pos_reviews = []
     neg_reviews = []
 
-    for pos_file in pos_files:
+    for pos_file in pos_files[:500]:
         with open(data_path + "pos/" + pos_file, 'r') as infile:
             pos_reviews.extend(infile.readlines())
-    for neg_file in neg_files:
+    for neg_file in neg_files[:500]:
         with open(data_path + "neg/" + neg_file, 'r') as infile:
             neg_reviews.extend(infile.readlines())
 
