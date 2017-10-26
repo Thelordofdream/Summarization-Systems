@@ -49,7 +49,7 @@ def save(sess):
 
 
 if __name__ == "__main__":
-    training_iters = 10
+    training_iters = 500
     display_step = 1
 
     data = AR_network.data(path="data/train/")
