@@ -4,7 +4,7 @@ import numpy as np
 
 
 class nerual_network(object):
-    def __init__(self, steps=49, inputs=300, hidden_d=300, hidden_q=64, batch_size=1, classes=2, learning_rate=0.001):
+    def __init__(self, steps=300, inputs=300, hidden_d=300, hidden_q=64, batch_size=100, classes=2, learning_rate=0.001):
         self.steps = steps
         self.inputs = inputs
         self.hidden_d = hidden_d
@@ -23,27 +23,27 @@ class Attensive_Reader(nerual_network):
         self.optimizer = None
         self.accuracy = None
         self.x = tf.placeholder("float", [None, self.steps, self.inputs], name="x")
-        with tf.variable_scope("input_layer"):
-            input_d = self.shape_tranform(self.x, self.steps)
-
-        with tf.variable_scope("Bd_LSTM_layer"):
-            outputs_d, output1_d, output2_d = self.create_LSTM_layer(input_d, seq_len=self.steps)
-
-        with tf.variable_scope("dense_layer"):
-            outputs_d = tf.transpose(outputs_d, [1, 0, 2])
-            time_seq = tf.reshape(outputs_d, [-1, self.steps * 2 * self.inputs])
-            hidden1_d_w = tf.Variable(tf.random_normal([self.steps * 2 * self.inputs, self.hidden_d]), name='hd1_w')
-            hidden1_d_b = tf.Variable(tf.random_normal([self.hidden_d]), name='hd1_b'),
-            hd_1 = tf.matmul(time_seq, hidden1_d_w) + hidden1_d_b
-
-        with tf.variable_scope("dropout"):
-            self.keep_prob_d = tf.placeholder(tf.float32, name="keep_prob_d")
-            hd_drop = tf.nn.dropout(hd_1, self.keep_prob_d)
-
-        with tf.variable_scope("readout_layer"):
-            hidden2_d_w = tf.Variable(tf.random_normal([self.hidden_d, self.classes]), name='hd2_w')
-            hidden2_d_b = tf.Variable(tf.random_normal([self.classes]), name='hd2_b')
-            output_d = tf.matmul(hd_drop, hidden2_d_w) + hidden2_d_b
+        # with tf.variable_scope("input_layer"):
+        #     input_d = self.shape_tranform(self.x, self.steps)
+        #
+        # with tf.variable_scope("Bd_LSTM_layer"):
+        #     outputs_d, output1_d, output2_d = self.create_LSTM_layer(input_d, seq_len=self.steps)
+        #
+        # with tf.variable_scope("dense_layer"):
+        #     outputs_d = tf.transpose(outputs_d, [1, 0, 2])
+        #     time_seq = tf.reshape(outputs_d, [-1, self.steps * 2 * self.inputs])
+        #     hidden1_d_w = tf.Variable(tf.random_normal([self.steps * 2 * self.inputs, self.hidden_d]), name='hd1_w')
+        #     hidden1_d_b = tf.Variable(tf.random_normal([self.hidden_d]), name='hd1_b'),
+        #     hd_1 = tf.matmul(time_seq, hidden1_d_w) + hidden1_d_b
+        #
+        # with tf.variable_scope("dropout"):
+        self.keep_prob_d = tf.placeholder(tf.float32, name="keep_prob_d")
+        #     hd_drop = tf.nn.dropout(hd_1, self.keep_prob_d)
+        #
+        # with tf.variable_scope("readout_layer"):
+        #     hidden2_d_w = tf.Variable(tf.random_normal([self.hidden_d, self.classes]), name='hd2_w')
+        #     hidden2_d_b = tf.Variable(tf.random_normal([self.classes]), name='hd2_b')
+        #     output_d = tf.matmul(hd_drop, hidden2_d_w) + hidden2_d_b
 
         self.q = tf.placeholder("float", [None, self.steps, self.inputs], name="q")
         with tf.variable_scope("input_layer_q"):
@@ -63,12 +63,12 @@ class Attensive_Reader(nerual_network):
             self.keep_prob_q = tf.placeholder(tf.float32, name="keep_prob_q")
             hq1_drop = tf.nn.dropout(hq_1, self.keep_prob_q)
 
-        self.a = tf.placeholder("float", [None, 4, self.inputs], name="a")
+        self.a = tf.placeholder("float", [None, self.steps, self.inputs], name="a")
         with tf.variable_scope("input_layer_a"):
-            input_a = self.shape_tranform(self.a, 4)
+            input_a = self.shape_tranform(self.a, self.steps)
 
         with tf.variable_scope("A_LSTM_layer"):
-            outputs_a, output1_a, output2_a = self.create_LSTM_layer(input_a, seq_len=4)
+            outputs_a, output1_a, output2_a = self.create_LSTM_layer(input_a, seq_len=self.steps)
 
         with tf.variable_scope("hidden_layer_a_fw"):
             hidden1_a_w = tf.Variable(tf.random_normal([self.inputs, self.hidden_q]), name='ha1_w')
@@ -86,7 +86,7 @@ class Attensive_Reader(nerual_network):
 
         with tf.variable_scope("dropout_a"):
             self.keep_prob_a = tf.placeholder(tf.float32, name="keep_prob_a")
-            ha1_drop = tf.nn.dropout(ha_1, self.keep_prob_d)
+            ha1_drop = tf.nn.dropout(ha_1, self.keep_prob_a)
 
         with tf.variable_scope("attention_layer"):
             Wum = tf.Variable(tf.random_normal([2 * self.hidden_q, 2 * self.hidden_q]), name='Wum')
@@ -115,7 +115,7 @@ class Attensive_Reader(nerual_network):
             Wrg = tf.Variable(tf.random_normal([2 * self.hidden_q, self.classes]), name='Wrg')
             output_g = tf.nn.tanh(tf.matmul(ha1_drop, Wug) + tf.matmul(r_drop, Wrg))
 
-        self.output = tf.add(output_d, output_g, name="add")
+        self.output = output_g
 
         self.y = tf.placeholder("float", [None, self.classes], name="y")
         with tf.variable_scope("loss"):
@@ -144,7 +144,7 @@ class Attensive_Reader(nerual_network):
                 lstm_fw_cell = rnn.BasicLSTMCell(self.inputs, forget_bias=0.1, state_is_tuple=True)
                 lstm_fw_cell = rnn.DropoutWrapper(lstm_fw_cell, input_keep_prob=1.0, output_keep_prob=1.0, seed=None)
         with tf.variable_scope("Backward_LSTM"):
-            with tf.device("/cpu:1"):
+            with tf.device("/cpu:0"):
                 lstm_bw_cell = rnn.BasicLSTMCell(self.inputs, forget_bias=0., state_is_tuple=True)
                 lstm_bw_cell = rnn.DropoutWrapper(lstm_bw_cell, input_keep_prob=1.0, output_keep_prob=1.0, seed=None)
         outputs, output1, output2 = rnn.static_bidirectional_rnn(lstm_fw_cell, lstm_bw_cell, input,
@@ -159,9 +159,9 @@ class Attensive_Reader(nerual_network):
 class data(nerual_network):
     def __init__(self, path):
         super(data, self).__init__()
-        _x_train = self.grabVecs(path + "dataset.pkl")
-        _q_train = self.grabVecs(path + "q.pkl")
-        _a_train = self.grabVecs(path + "a.pkl")
+        _x_train = self.grabVecs(path + "vecs.pkl")
+        _q_train = self.grabVecs(path + "vecs.pkl")
+        _a_train = self.grabVecs(path + "vecs.pkl")
         _y_train = self.grabVecs(path + "label.pkl")
         self.total = len(_x_train)
         self.rest = 4

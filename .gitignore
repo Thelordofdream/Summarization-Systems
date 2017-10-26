@@ -16,3 +16,8 @@ aclImdb/train/urls_unsup.txt
 GoogleNews-vectors-negative300.bin
 test/
 train/
+AR_network.pyc
+Word2Vec.pyc
+model/
+test.py
+train1/
