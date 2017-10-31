@@ -53,7 +53,7 @@ if __name__ == "__main__":
     display_step = 1
 
     data = AR_network.data(path="data/train/")
-    my_network = AR_network.Attensive_Reader(name="TC")
+    my_network = AR_network.Attentive_Reader(name="TC")
 
     init = tf.global_variables_initializer()
     with tf.Session() as sess:

@@ -14,9 +14,9 @@ class nerual_network(object):
         self.learning_rate = learning_rate
 
 
-class Attensive_Reader(nerual_network):
+class Attentive_Reader(nerual_network):
     def __init__(self, name="N1"):
-        super(Attensive_Reader, self).__init__()
+        super(Attentive_Reader, self).__init__()
         self.name = name
         self.output = None
         self.cross_entropy = None
