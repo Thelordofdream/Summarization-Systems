@@ -63,5 +63,6 @@ def embedding(tag):
     n_dim = 300
     pos_vector = [buildWordVector(model_google, z, n_dim) for z in pos_reviews]
     neg_vector = [buildWordVector(model_google, z, n_dim) for z in neg_reviews]
-    storeVecs(pos_vector, tag + '/pos_vecs.pkl')
-    storeVecs(neg_vector, tag + '/neg_vecs.pkl')
+    # storeVecs(pos_vector, tag + '/pos_vecs.pkl')
+    # storeVecs(neg_vector, tag + '/neg_vecs.pkl')
+    return pos_vector, neg_vector

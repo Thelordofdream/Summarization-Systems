@@ -2,16 +2,16 @@ import Word2Vec
 import numpy as np
 import random
 
-# Word2Vec.embedding('train')
-# Word2Vec.embedding('test')
+train_pos_vector, train_neg_vector = Word2Vec.embedding('train')
+test_pos_vector, test_neg_vector = Word2Vec.embedding('test')
 
-train_pos_vector = Word2Vec.grabVecs("train/pos_vecs.pkl")
-train_neg_vector = Word2Vec.grabVecs("train/neg_vecs.pkl")
-test_pos_vector = Word2Vec.grabVecs("test/pos_vecs.pkl")
-test_neg_vector = Word2Vec.grabVecs("test/neg_vecs.pkl")
+# train_pos_vector = Word2Vec.grabVecs("train/pos_vecs.pkl")
+# train_neg_vector = Word2Vec.grabVecs("train/neg_vecs.pkl")
+# test_pos_vector = Word2Vec.grabVecs("test/pos_vecs.pkl")
+# test_neg_vector = Word2Vec.grabVecs("test/neg_vecs.pkl")
 
-m_max = 300
-m_min = 0
+m_max = 100
+m_min = 50
 
 train_pos = 0
 train_pos_vector_alignment = []
