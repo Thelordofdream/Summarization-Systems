@@ -139,7 +139,7 @@ class Attentive_Reader(nerual_network):
         return X
 
     def create_LSTM_layer(self, input, seq_len):
-        _seq_len = tf.fill([self.batch_size], tf.constant(seq_len, dtype=tf.float32))
+        _seq_len = tf.fill([self.batch_size], tf.constant(seq_len, dtype=tf.int32))
         with tf.variable_scope("Forward_LSTM"):
             with tf.device("/cpu:0"):
                 lstm_fw_cell = rnn.BasicLSTMCell(self.inputs, forget_bias=0.1, state_is_tuple=True)
